@@ -167,15 +167,49 @@
       margin-bottom: 12px;
       border: 1px solid var(--border);
     }
+    .skill-card.primary-pick {
+      border: 2px solid var(--gold);
+      background: #fffdf9;
+    }
+    .pick-tag {
+      display: inline-block;
+      background: var(--gold);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
     .skill-name {
       font-weight: 700;
       font-size: 16px;
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .skill-specialty {
+      font-size: 11px;
+      background: #eee;
+      color: #444;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
     }
     .skill-point {
       font-size: 13px;
       color: var(--sub);
+      margin-bottom: 10px;
+    }
+    .stylist-comment {
+      font-size: 12px;
+      background: #fff;
+      border-left: 3px solid var(--accent);
+      padding: 8px 10px;
+      color: #333;
       margin-bottom: 12px;
+      border-radius: 0 6px 6px 0;
     }
     .btn {
       display: block;
@@ -249,7 +283,7 @@
       margin-top: 8px;
     }
     .karte-box li {
-      padding: 4px 0;
+      padding: 6px 0;
       border-bottom: 1px solid #f0eae1;
     }
     .karte-box li strong {
@@ -262,7 +296,7 @@
 <body>
 
 <header>
-  <span class="sub-title">Produced by MIKAMI / SKILL</span>
+  <span class="sub-title">Produced by MIKAMI / SKILL SHIBUYA</span>
   <h1>パーソナル髪型＆アイロン診断</h1>
 </header>
 
@@ -273,7 +307,7 @@
       <div id="progress" class="progress-fill"></div>
     </div>
     <div id="step-label" class="step-label">STEP 1 / 4</div>
-    <h2 id="question-title" class="question-title">あなたの「顔の形」に一番近いものは？</h2>
+    <h2 id="question-title" class="question-title"></h2>
     <div id="options-container" class="options"></div>
   </div>
 
@@ -298,7 +332,6 @@
           <span class="tag">NEW RELEASE</span>
           <h4>みかみプロデュース 新作ヘアアイロン</h4>
           <p>プレートの滑りと小回りを極限まで追求。初心者でも「波打ち」「毛流れ」「外ハネ」が驚くほど簡単に決まります。</p>
-          <!-- ※アイロンの販売URLが決まったらhrefの中身を書き換えてください -->
           <a href="#iron-link" class="btn btn-gold" onclick="alert('ここに新作ヘアアイロンの販売ページURLを設定します！'); return false;">新作アイロンの詳細を見る →</a>
         </div>
       </div>
@@ -309,22 +342,18 @@
         <div id="res-wax-list" class="wax-grid"></div>
       </div>
 
-      <!-- 3. SKILL美容師＆エリア提案 -->
+      <!-- 3. SKILL 渋谷店スタイリスト提案 -->
       <div class="section-box">
-        <h3 class="section-title"><span class="badge-num">3</span>おすすめのSKILLスタイリスト</h3>
-        <div class="skill-card">
-          <div id="res-salon-area" class="skill-name"></div>
-          <p id="res-salon-desc" class="skill-point"></p>
-          <!-- ※SKILLの予約URLやホットペッパーURLに書き換え可能 -->
-          <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="btn btn-black">SKILLのスタイリスト・予約を見る →</a>
-        </div>
+        <h3 class="section-title"><span class="badge-num">3</span>SKILL 渋谷店 おすすめスタイリスト</h3>
+        <p style="font-size: 12px; color: var(--sub); margin-bottom: 12px;">診断スタイルとあなたのこだわりにぴったりな渋谷店の担当者です。</p>
+        <div id="res-stylist-list"></div>
       </div>
 
       <!-- 4. 美容師に見せるだけオーダーカルテ -->
       <div class="section-box">
-        <h3 class="section-title"><span class="badge-num">4</span>美容室で見せるだけ！オーダーカルテ</h3>
+        <h3 class="section-title"><span class="badge-num">4</span>SKILL 渋谷店で見せるだけ！オーダーカルテ</h3>
         <div class="karte-box">
-          <p>美容師さんにこの画面を見せるだけで、似合わせカットの相談がスムーズになります。</p>
+          <p>来店時、担当スタイリストにこの画面を見せるだけでカウンセリングがスムーズになります。</p>
           <ul id="res-karte-list"></ul>
         </div>
       </div>
@@ -335,6 +364,76 @@
 </div>
 
 <script>
+  // SKILL 渋谷店 スタイリストデータベース
+  const stylistsDB = {
+    mikami: {
+      name: "みかみ .",
+      specialty: "ナチュラル",
+      comment: "よろしくお願いします！",
+      reason: "トレンドの似合わせと、自宅でも再現しやすいナチュラル＆毛流れベースの生みの親。"
+    },
+    shibayama: {
+      name: "柴山 正人",
+      specialty: "メンズカット",
+      comment: "見た目のギャップありアイドル、アニメ好き美容師です",
+      reason: "王道マッシュやアイドル系の束感シルエット作りが抜群。共通の趣味トークで楽しく過ごしたい方にも！"
+    },
+    yokota: {
+      name: "横田 結希",
+      specialty: "メンズカット",
+      comment: "カッコよくしか出来ません！@01__yuk_",
+      reason: "骨格に合わせたエッジの効いたメンズカットで、確実にカッコいいシルエットへ導きます。"
+    },
+    goto: {
+      name: "後藤 愛夏",
+      specialty: "メンズカット",
+      comment: "“メンズ特化”ハイトーンカラーは私にお任せください！",
+      reason: "ハイトーンやブリーチカラーと、動きのあるメンズカットを掛け合わせたスタイルなら絶対お任せ！"
+    },
+    kobayashi: {
+      name: "小林 圭祐",
+      specialty: "メンズカット",
+      comment: "11月のご予約はInstagramのDMからお願いします。",
+      reason: "無造作な動きやトレンド感のあるメンズカットが得意。（※11月のご予約はInstagramのDMから）"
+    },
+    hayano: {
+      name: "早野 蓮",
+      specialty: "メンズカット",
+      comment: "11月のご予約はInstagramのDMからお願いします。",
+      reason: "ストリートやこなれ感のあるメンズスタイルを高い技術で再現。（※11月のご予約はInstagramのDMから）"
+    },
+    kamata: {
+      name: "鎌田 なぎさ",
+      specialty: "ナチュラル",
+      comment: "11月のご予約はInstagramのDMからお願いします。",
+      reason: "作り込みすぎない清潔感抜群のナチュラルヘア・毛流れスタイルが得意。（※11月のご予約はInstagramのDMから）"
+    },
+    iwamoto: {
+      name: "岩本 桂弥",
+      specialty: "メンズカット",
+      comment: "※【岩本桂弥限定】メニューをお選びください",
+      reason: "骨格補正から爽やかな短髪・王道メンズカットまで幅広く対応。（※予約時は限定メニューを選択）"
+    },
+    kinoshita: {
+      name: "木下 仁来",
+      specialty: "メンズカット",
+      comment: "緩めパーマから特殊パーマお任せ下さい^ ^",
+      reason: "アイロン風の緩めニュアンスパーマから、波巻き・スパイラルなどの特殊パーマまで圧倒的クオリティ！"
+    },
+    enokido: {
+      name: "榎戸 颯汰",
+      specialty: "メンズカット",
+      comment: "丁寧で柔らかい雰囲気と技術力で確実なリピート",
+      reason: "初めての来店やオーダーが不安な方でも安心。丁寧なカウンセリングと確かな技術で理想の髪型に。"
+    },
+    free: {
+      name: "指名 無し1",
+      specialty: "ナチュラル",
+      comment: "担当お決まりでない方はこちらをお選びください",
+      reason: "当日スムーズに案内してほしい方や、まずはSKILL渋谷店の雰囲気を体験してみたい方に最適です。"
+    }
+  };
+
   // 設問データ
   const questions = [
     {
@@ -352,9 +451,9 @@
       key: "fashion",
       options: [
         { label: "キレイめ・韓国・モード系", desc: "シャツやスラックス、大人っぽい服装", value: "clean" },
-        { label: "カジュアル・シンプル系", desc: "無地Tやニットなど清潔感のある王道服", value: "casual" },
-        { label: "ストリート・古着系", desc: "オーバーサイズや個性のあるアイテム", value: "street" },
-        { label: "ビジネス・スーツ・爽やか系", desc: "ジャケットや誠実さ重視のスタイル", value: "biz" }
+        { label: "カジュアル・アイドル・王道系", desc: "清潔感のあるトレンド服や爽やか系", value: "casual" },
+        { label: "ストリート・古着・こなれ系", desc: "オーバーサイズや個性のあるアイテム", value: "street" },
+        { label: "ビジネス・スーツ・短髪爽やか系", desc: "ジャケットや誠実さ重視のスタイル", value: "biz" }
       ]
     },
     {
@@ -367,12 +466,14 @@
       ]
     },
     {
-      title: "Q4. お住まいのエリア（通いやすい地域）は？",
-      key: "area",
+      title: "Q4. 美容室（SKILL 渋谷店）で特に重視したいことは？",
+      key: "salonPref",
       options: [
-        { label: "関東エリア（東京・神奈川・千葉・埼玉）", desc: "東京・渋谷/表参道エリアへアクセス可能", value: "kanto" },
-        { label: "関西・東海エリア（大阪・名古屋など）", desc: "主要都市の店舗へアクセス可能", value: "kansai" },
-        { label: "その他の地域・まずは自宅セット重視", desc: "遠方のためセルフセットから極めたい", value: "other" }
+        { label: "毎日のセットが楽になるカットをしてほしい", desc: "ベースカットやナチュラルな似合わせ重視", value: "cut" },
+        { label: "パーマ（緩め〜波巻き・特殊）も相談したい", desc: "アイロンなしでも動くパーマに興味がある", value: "perm" },
+        { label: "ハイトーンや透明感カラーも任せたい", desc: "髪色でも周りと差をつけたい", value: "color" },
+        { label: "優しい雰囲気で丁寧に相談に乗ってほしい", desc: "緊張せずじっくり似合う髪型を決めたい", value: "careful" },
+        { label: "まだ担当が決まっていない・お任せしたい", desc: "まずは指名なしで気軽に予約したい", value: "free" }
       ]
     }
   ];
@@ -393,6 +494,7 @@
         { name: "ニュアンス（ナチュラル派に）", desc: "固めすぎず、すっぴん風の自然な毛流れを作る。", url: "https://kantanseries.com/nuance/" },
         { name: "サラツヤ オイル（アイロン前下地）", desc: "熱ダメージを防ぎ、アイロンの跡をつけやすくする必須オイル。", url: "https://kantanseries.com/saratsuya/" }
       ],
+      baseStylists: ["mikami", "kamata", "enokido"],
       karteCut: "前髪長め（目〜鼻下）のセンターパートベース。耳周りに毛が溜まらないようツーブロック＆毛量調整。"
     },
     shadowMash: {
@@ -408,6 +510,7 @@
         { name: "ふわもち（短め・キープ派に）", desc: "ふんわりした空気感と、1日崩れないセット力を両立。", url: "https://kantanseries.com/fuwamochi/" },
         { name: "さらけあ（ベースケア）", desc: "毎日のアイロン前に馴染ませてサラサラな土台を作る。", url: "https://kantanseries.com/saracare/" }
       ],
+      baseStylists: ["shibayama", "yokota", "kobayashi"],
       karteCut: "目元ギリギリのラウンドマッシュベース。ワックスをつけた時に束が動きやすいよう表面にレイヤー（段）を入れる。"
     },
     waveSpiral: {
@@ -423,6 +526,7 @@
         { name: "うるたば（ツヤ束メイン推奨）", desc: "波打ち・スパイラルのリッジ（カールの山）をくっきり艶やかに出す。", url: "https://kantanseries.com/urutaba/" },
         { name: "ふわもち（マット束派に）", desc: "重くなりすぎず、立体的な束感をしっかりホールド。", url: "https://kantanseries.com/fuwamochi/" }
       ],
+      baseStylists: ["kinoshita", "hayano", "goto"],
       karteCut: "重めマッシュベース。アイロンで巻いた時に1.5〜2回転入る長さを残し、ハチ周りはタイトに収める。"
     },
     upBang: {
@@ -438,6 +542,7 @@
         { name: "コンクリ（超ハード推奨）", desc: "立ち上げた前髪とシャープな束感を1日中ガチッと強力キープ。", url: "https://kantanseries.com/concre/" },
         { name: "かちっと（速乾ホールド）", desc: "ツヤを出しながらパリッと固めたいビジネス・ショート派に最適。", url: "https://kantanseries.com/kachitto/" }
       ],
+      baseStylists: ["iwamoto", "yokota", "enokido"],
       karteCut: "前髪が立ち上がりやすいショートレイヤーベース。サイドはツーブロックでスッキリ刈り上げ。"
     }
   };
@@ -473,6 +578,32 @@
     }
   }
 
+  // スタイリスト選定ロジック
+  function getRecommendedStylists(styleObj, salonPrefValue) {
+    const pickedKeys = [];
+
+    // Q4のこだわりに応じた最優先スタイリストを追加
+    if (salonPrefValue === "perm") {
+      pickedKeys.push("kinoshita");
+    } else if (salonPrefValue === "color") {
+      pickedKeys.push("goto");
+    } else if (salonPrefValue === "careful") {
+      pickedKeys.push("enokido");
+    } else if (salonPrefValue === "free") {
+      pickedKeys.push("free");
+    }
+
+    // 髪型ごとの相性スタイリストを追加（重複除外）
+    styleObj.baseStylists.forEach(k => {
+      if (!pickedKeys.includes(k)) {
+        pickedKeys.push(k);
+      }
+    });
+
+    // 上位3名を返す
+    return pickedKeys.slice(0, 3).map(k => stylistsDB[k]);
+  }
+
   function showResult() {
     document.getElementById("quiz-screen").classList.add("hidden");
     document.getElementById("result-screen").classList.remove("hidden");
@@ -486,17 +617,16 @@
     } else if (answers.fashion.value === "street") {
       selectedKey = "waveSpiral";
     } else {
-      // カジュアル系の場合は顔型で分岐
       if (answers.face.value === "round") {
-        selectedKey = "centerPart"; // 丸顔は縦ラインが出るセンターパート推奨
+        selectedKey = "centerPart";
       } else {
-        selectedKey = "shadowMash"; // 面長・ベース型はフォルム補正しやすいマッシュ
+        selectedKey = "shadowMash";
       }
     }
 
     const res = stylesDB[selectedKey];
 
-    // 顔型・髪質に応じたパーソナルアドバイスの追加
+    // 顔型に応じたパーソナルアドバイス
     let personalAdvice = "";
     if (answers.face.value === "long") {
       personalAdvice = "【面長さんへの似合わせポイント】横のシルエットに丸み（ボリューム）を出すことで、縦長感が消えて一気に小顔に見えます！";
@@ -511,7 +641,7 @@
     document.getElementById("res-style-name").textContent = res.name;
     document.getElementById("res-style-desc").textContent = `${res.desc} ${personalAdvice}`;
 
-    // アイロン操作＆動画表示
+    // 1. アイロン操作＆動画表示
     document.getElementById("res-iron-title").textContent = `まずは「${res.ironTitle}」を練習！`;
     document.getElementById("res-iron-desc").textContent = res.ironDesc;
 
@@ -527,7 +657,7 @@
       videoContainer.appendChild(a);
     });
 
-    // KANTAN series 表示
+    // 2. KANTAN series 表示
     const waxContainer = document.getElementById("res-wax-list");
     waxContainer.innerHTML = "";
     res.waxes.forEach(w => {
@@ -541,27 +671,36 @@
       waxContainer.appendChild(div);
     });
 
-    // SKILL 地域別スタイリスト提案
-    const salonTitle = document.getElementById("res-salon-area");
-    const salonDesc = document.getElementById("res-salon-desc");
-    if (answers.area.value === "kanto") {
-      salonTitle.textContent = "SKILL 東京（渋谷・表参道エリア）がおすすめ！";
-      salonDesc.textContent = `通いやすい東京エリアの店舗で、「${res.name}」のベースカットを得意とするSKILLスタイリストに任せましょう。カットだけで毎日のアイロンが劇的に楽になります。`;
-    } else if (answers.area.value === "kansai") {
-      salonTitle.textContent = "SKILL 主要都市店舗・提携スタイリスト";
-      salonDesc.textContent = `お近くのエリアや東京へお越しの際はぜひSKILLへ。ベースカットで「流れやすい・動きやすい」土台を作るのがセット上達の最短ルートです。`;
-    } else {
-      salonTitle.textContent = "まずはセルフセット＆東京遠征時はSKILLへ！";
-      salonDesc.textContent = `遠方の方はまず下の「オーダーカルテ」を地元の美容師さんに見せてベースを作ってもらい、みかみさんの動画とKANTANシリーズで自宅セットを極めましょう！`;
-    }
+    // 3. SKILL 渋谷店スタイリスト表示
+    const stylistContainer = document.getElementById("res-stylist-list");
+    stylistContainer.innerHTML = "";
+    const recommendedStylists = getRecommendedStylists(res, answers.salonPref.value);
 
-    // オーダーカルテ生成
+    recommendedStylists.forEach((st, idx) => {
+      const div = document.createElement("div");
+      div.className = idx === 0 ? "skill-card primary-pick" : "skill-card";
+      const pickBadge = idx === 0 ? `<span class="pick-tag">ベストマッチ担当</span>` : "";
+      div.innerHTML = `
+        ${pickBadge}
+        <div class="skill-name">
+          <span>${st.name}</span>
+          <span class="skill-specialty">得意：${st.specialty}</span>
+        </div>
+        <p class="skill-point">${st.reason}</p>
+        <div class="stylist-comment">💬 「${st.comment}」</div>
+        <a href="#booking" onclick="alert('ここにSKILL渋谷店の予約ページ（ホットペッパーやInstagram等）のURLを設定できます！'); return false;" class="btn btn-black">${st.name} を指名して予約する →</a>
+      `;
+      stylistContainer.appendChild(div);
+    });
+
+    // 4. オーダーカルテ生成
     const karteList = document.getElementById("res-karte-list");
     karteList.innerHTML = `
       <li><strong>希望スタイル</strong>${res.name}</li>
-      <li><strong>骨格タイプ</strong>${answers.face.label}</li>
-      <li><strong>髪質の特徴</strong>${answers.hair.label}</li>
-      <li><strong>カット要望</strong>${res.karteCut}</li>
+      <li><strong>推奨スタイリスト</strong>${recommendedStylists[0].name}（SKILL 渋谷店）</li>
+      <li><strong>骨格・髪質</strong>${answers.face.label} ／ ${answers.hair.label}</li>
+      <li><strong>サロンでの要望</strong>${answers.salonPref.label}</li>
+      <li><strong>カットメモ</strong>${res.karteCut}</li>
     `;
 
     window.scrollTo({ top: 0, behavior: "smooth" });
