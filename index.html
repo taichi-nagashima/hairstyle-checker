@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIKAMI監修｜パーソナルヘアスタイル＆スタイリング診断</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --sub: #666666;
+      --accent: #111111;
+      --gold: #c5a059;
+      --border: #e5e7eb;
+      --yt-red: #ff0000;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+    header {
+      background: var(--accent);
+      color: #fff;
+      text-align: center;
+      padding: 24px 16px;
+      letter-spacing: 0.08em;
+    }
+    header .sub-title {
+      font-size: 11px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      display: block;
+      margin-bottom: 4px;
+    }
+    header h1 { font-size: 18px; font-weight: 700; }
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+    .progress-bar {
+      height: 4px;
+      background: #eee;
+      border-radius: 2px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 25%;
+      transition: width 0.3s ease;
+    }
+    .step-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .question-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .option-btn {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: left;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .option-btn:hover, .option-btn:active {
+      border-color: var(--accent);
+      background: #fafafa;
+      transform: translateY(-1px);
+    }
+    .option-btn span.desc {
+      font-size: 12px;
+      color: var(--sub);
+      font-weight: 400;
+      display: block;
+      margin-top: 2px;
+    }
+    .option-btn::after {
+      content: "→";
+      font-size: 14px;
+      color: #999;
+    }
+    /* Result Styles */
+    .hidden { display: none; }
+    .result-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .result-style-name {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .result-desc {
+      font-size: 14px;
+      color: var(--sub);
+      margin-bottom: 20px;
+    }
+    .section-box {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: var(--gold);
+      color: #fff;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    .skill-card {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+    }
+    .skill-name {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .skill-point {
+      font-size: 13px;
+      color: var(--sub);
+      margin-bottom: 12px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn-yt {
+      background: var(--yt-red);
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .btn-black {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, #c5a059, #9e7a36);
+      color: #fff;
+    }
+    .btn-outline {
+      background: #fff;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+      margin-top: 12px;
+    }
+    .iron-promo {
+      background: linear-gradient(135deg, #1a1a1a, #333333);
+      color: #fff;
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 12px;
+    }
+    .iron-promo .tag {
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+    .iron-promo h4 {
+      font-size: 16px;
+      margin: 4px 0 8px;
+    }
+    .iron-promo p {
+      font-size: 12px;
+      color: #ccc;
+      margin-bottom: 14px;
+    }
+    .wax-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .karte-box {
+      background: #fffdf9;
+      border: 1.5px dashed var(--gold);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 13px;
+    }
+    .karte-box ul {
+      list-style: none;
+      margin-top: 8px;
+    }
+    .karte-box li {
+      padding: 4px 0;
+      border-bottom: 1px solid #f0eae1;
+    }
+    .karte-box li strong {
+      display: inline-block;
+      width: 110px;
+      color: var(--sub);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="sub-title">Produced by MIKAMI / SKILL</span>
+  <h1>パーソナル髪型＆アイロン診断</h1>
+</header>
+
+<div class="container">
+  <!-- 診断ステップ画面 -->
+  <div id="quiz-screen" class="card">
+    <div class="progress-bar">
+      <div id="progress" class="progress-fill"></div>
+    </div>
+    <div id="step-label" class="step-label">STEP 1 / 4</div>
+    <h2 id="question-title" class="question-title">あなたの「顔の形」に一番近いものは？</h2>
+    <div id="options-container" class="options"></div>
+  </div>
+
+  <!-- 診断結果画面 -->
+  <div id="result-screen" class="hidden">
+    <div class="card">
+      <span class="result-badge">あなたに最も似合うスタイル</span>
+      <h2 id="res-style-name" class="result-style-name"></h2>
+      <p id="res-style-desc" class="result-desc"></p>
+
+      <!-- 1. 優先して覚えるべきアイロン操作 -->
+      <div class="section-box">
+        <h3 class="section-title"><span class="badge-num">1</span>最優先で覚えるべきアイロン操作</h3>
+        <div class="skill-card">
+          <div id="res-iron-title" class="skill-name"></div>
+          <p id="res-iron-desc" class="skill-point"></p>
+          <div id="res-iron-videos"></div>
+        </div>
+
+        <!-- 新作ヘアアイロン訴求枠 -->
+        <div class="iron-promo">
+          <span class="tag">NEW RELEASE</span>
+          <h4>みかみプロデュース 新作ヘアアイロン</h4>
+          <p>プレートの滑りと小回りを極限まで追求。初心者でも「波打ち」「毛流れ」「外ハネ」が驚くほど簡単に決まります。</p>
+          <!-- ※アイロンの販売URLが決まったらhrefの中身を書き換えてください -->
+          <a href="#iron-link" class="btn btn-gold" onclick="alert('ここに新作ヘアアイロンの販売ページURLを設定します！'); return false;">新作アイロンの詳細を見る →</a>
+        </div>
+      </div>
+
+      <!-- 2. おすすめKANTAN series -->
+      <div class="section-box">
+        <h3 class="section-title"><span class="badge-num">2</span>この髪型を再現する KANTAN series</h3>
+        <div id="res-wax-list" class="wax-grid"></div>
+      </div>
+
+      <!-- 3. SKILL美容師＆エリア提案 -->
+      <div class="section-box">
+        <h3 class="section-title"><span class="badge-num">3</span>おすすめのSKILLスタイリスト</h3>
+        <div class="skill-card">
+          <div id="res-salon-area" class="skill-name"></div>
+          <p id="res-salon-desc" class="skill-point"></p>
+          <!-- ※SKILLの予約URLやホットペッパーURLに書き換え可能 -->
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="btn btn-black">SKILLのスタイリスト・予約を見る →</a>
+        </div>
+      </div>
+
+      <!-- 4. 美容師に見せるだけオーダーカルテ -->
+      <div class="section-box">
+        <h3 class="section-title"><span class="badge-num">4</span>美容室で見せるだけ！オーダーカルテ</h3>
+        <div class="karte-box">
+          <p>美容師さんにこの画面を見せるだけで、似合わせカットの相談がスムーズになります。</p>
+          <ul id="res-karte-list"></ul>
+        </div>
+      </div>
+
+      <button class="btn btn-outline" onclick="restartQuiz()">もう一度診断する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 設問データ
+  const questions = [
+    {
+      title: "Q1. あなたの「顔の形」に一番近いものは？",
+      key: "face",
+      options: [
+        { label: "丸顔", desc: "顔の縦横比が近く、輪郭に丸みがある", value: "round" },
+        { label: "面長", desc: "縦のラインが長めで大人っぽい印象", value: "long" },
+        { label: "ベース型（エラ張り）", desc: "エラやハチ周りがしっかりしている", value: "base" },
+        { label: "卵型・逆三角形", desc: "顎がシャープ、またはバランス型", value: "oval" }
+      ]
+    },
+    {
+      title: "Q2. 普段よく着る「洋服の系統」は？",
+      key: "fashion",
+      options: [
+        { label: "キレイめ・韓国・モード系", desc: "シャツやスラックス、大人っぽい服装", value: "clean" },
+        { label: "カジュアル・シンプル系", desc: "無地Tやニットなど清潔感のある王道服", value: "casual" },
+        { label: "ストリート・古着系", desc: "オーバーサイズや個性のあるアイテム", value: "street" },
+        { label: "ビジネス・スーツ・爽やか系", desc: "ジャケットや誠実さ重視のスタイル", value: "biz" }
+      ]
+    },
+    {
+      title: "Q3. あなたの「髪質・髪の悩み」は？",
+      key: "hair",
+      options: [
+        { label: "軟毛・猫っ毛でボリュームが出にくい", desc: "時間が経つとペタッとしやすい", value: "soft" },
+        { label: "硬毛・直毛で動きがつきにくい", desc: "髪がツンツンして曲がりにくい", value: "hard" },
+        { label: "くせ毛・広がりやすい", desc: "パサつきやうねりが気になる", value: "wavy" }
+      ]
+    },
+    {
+      title: "Q4. お住まいのエリア（通いやすい地域）は？",
+      key: "area",
+      options: [
+        { label: "関東エリア（東京・神奈川・千葉・埼玉）", desc: "東京・渋谷/表参道エリアへアクセス可能", value: "kanto" },
+        { label: "関西・東海エリア（大阪・名古屋など）", desc: "主要都市の店舗へアクセス可能", value: "kansai" },
+        { label: "その他の地域・まずは自宅セット重視", desc: "遠方のためセルフセットから極めたい", value: "other" }
+      ]
+    }
+  ];
+
+  // スタイル＆アイロン操作＆ワックスのデータベース
+  const stylesDB = {
+    centerPart: {
+      name: "色気と清潔感の「毛流れセンターパート」",
+      desc: "おでこを出しつつ顔周りにS字の毛流れを作ることで、大人っぽさと小顔効果を両立する王道モテスタイルです。内巻きベースの簡単なアイロン操作だけで驚くほど綺麗に流れます。",
+      ironTitle: "毛流れの作り方 ＆ 前髪の立ち上げ",
+      ironDesc: "毛束を前に引き出しながら斜めに挟み、手首を返さず後ろへ流す「みかみ式・簡単毛流れ術」と、根元を90度立ち上げる操作を最優先でマスターしましょう！",
+      videos: [
+        { label: "▶ 動画で「毛流れの作り方」を見る", url: "https://youtu.be/JJ8gOOEsL3I?si=PCzLbbJ42_RiwArO" },
+        { label: "▶ 動画で「前髪の立ち上げ方」を見る", url: "https://youtu.be/vIMsB3HS8fo?si=w_9fioGP1aptJ-Hm" }
+      ],
+      waxes: [
+        { name: "うるつや（メイン推奨）", desc: "色気のあるツヤ感と毛流れのキープ力を両立。", url: "https://kantanseries.com/urutsuya/" },
+        { name: "ニュアンス（ナチュラル派に）", desc: "固めすぎず、すっぴん風の自然な毛流れを作る。", url: "https://kantanseries.com/nuance/" },
+        { name: "サラツヤ オイル（アイロン前下地）", desc: "熱ダメージを防ぎ、アイロンの跡をつけやすくする必須オイル。", url: "https://kantanseries.com/saratsuya/" }
+      ],
+      karteCut: "前髪長め（目〜鼻下）のセンターパートベース。耳周りに毛が溜まらないようツーブロック＆毛量調整。"
+    },
+    shadowMash: {
+      name: "ふんわり空気感の「無造作シャドウマッシュ」",
+      desc: "波打ちなどの難しい技術を使わず、「外ハネ」をランダムに入れて散らすだけで完成する今トレンドの緩め束感マッシュです。顔の余白を自然にカバーできます。",
+      ironTitle: "シャドウパーマ風（中間からの外ハネ散らし）",
+      ironDesc: "根元からスーッと引き、中間〜毛先だけ軽く外ハネにして冷める前に散らすだけ！最も簡単なのにパーマ級の無造作感が出せます。",
+      videos: [
+        { label: "▶ 動画で「シャドウパーマの入れ方」を見る", url: "https://youtu.be/CnCOdVvWx_c?si=119CIhJJXVM6ZpEE" }
+      ],
+      waxes: [
+        { name: "ゆるたば（長め・緩め派に）", desc: "マットな質感なのに一切絡まず、今っぽい緩い束感が簡単に作れる新作。", url: "https://kantanseries.com/yurutaba/" },
+        { name: "ふわもち（短め・キープ派に）", desc: "ふんわりした空気感と、1日崩れないセット力を両立。", url: "https://kantanseries.com/fuwamochi/" },
+        { name: "さらけあ（ベースケア）", desc: "毎日のアイロン前に馴染ませてサラサラな土台を作る。", url: "https://kantanseries.com/saracare/" }
+      ],
+      karteCut: "目元ギリギリのラウンドマッシュベース。ワックスをつけた時に束が動きやすいよう表面にレイヤー（段）を入れる。"
+    },
+    waveSpiral: {
+      name: "立体感と圧倒的オーラの「波巻き＆スパイラルマッシュ」",
+      desc: "ストリートや古着、こなれ感のあるファッションに抜群に映える立体ウェーブスタイル。アイロンを使いこなす楽しさを一番実感できる髪型です。",
+      ironTitle: "波打ちウェーブ ＆ スパイラル巻き",
+      ironDesc: "内・外・内と交互に波を作る「波打ち」と、立体的な縦落ちカールを作る「スパイラル」を練習しましょう。一度手が覚えれば一生モノの技術になります！",
+      videos: [
+        { label: "▶ 動画で「波うちの入れ方」を見る", url: "https://youtu.be/dext7w9-OHg?si=kkTo5sTwYvje9Eq-" },
+        { label: "▶ 動画で「スパイラルの入れ方」を見る", url: "https://youtu.be/Yu78yJKKzZ8?si=xnMDEmx4bzFYb-yL" }
+      ],
+      waxes: [
+        { name: "うるたば（ツヤ束メイン推奨）", desc: "波打ち・スパイラルのリッジ（カールの山）をくっきり艶やかに出す。", url: "https://kantanseries.com/urutaba/" },
+        { name: "ふわもち（マット束派に）", desc: "重くなりすぎず、立体的な束感をしっかりホールド。", url: "https://kantanseries.com/fuwamochi/" }
+      ],
+      karteCut: "重めマッシュベース。アイロンで巻いた時に1.5〜2回転入る長さを残し、ハチ周りはタイトに収める。"
+    },
+    upBang: {
+      name: "爽やかさ全開の「スマートアップバングショート」",
+      desc: "前髪を立ち上げておでこを見せることで、誠実さ・男らしさ・清潔感を最大化するスタイル。ビジネスから休日のカジュアルまで幅広く好印象を与えます。",
+      ironTitle: "前髪の立ち上げ ＆ 毛先の外ハネ操作",
+      ironDesc: "前髪の根元を90度に立ち上げて熱を入れ、冷めるまでキープする基本動作と、トップに軽い外ハネを入れて動かす技術を優先して覚えましょう！",
+      videos: [
+        { label: "▶ 動画で「前髪の立ち上げ方」を見る", url: "https://youtu.be/vIMsB3HS8fo?si=w_9fioGP1aptJ-Hm" },
+        { label: "▶ 動画で「外ハネの動かし方」を見る", url: "https://youtu.be/CnCOdVvWx_c?si=119CIhJJXVM6ZpEE" }
+      ],
+      waxes: [
+        { name: "コンクリ（超ハード推奨）", desc: "立ち上げた前髪とシャープな束感を1日中ガチッと強力キープ。", url: "https://kantanseries.com/concre/" },
+        { name: "かちっと（速乾ホールド）", desc: "ツヤを出しながらパリッと固めたいビジネス・ショート派に最適。", url: "https://kantanseries.com/kachitto/" }
+      ],
+      karteCut: "前髪が立ち上がりやすいショートレイヤーベース。サイドはツーブロックでスッキリ刈り上げ。"
+    }
+  };
+
+  let currentStep = 0;
+  const answers = {};
+
+  function renderQuestion() {
+    const q = questions[currentStep];
+    document.getElementById("step-label").textContent = `STEP ${currentStep + 1} / ${questions.length}`;
+    document.getElementById("progress").style.width = `${((currentStep + 1) / questions.length) * 100}%`;
+    document.getElementById("question-title").textContent = q.title;
+
+    const container = document.getElementById("options-container");
+    container.innerHTML = "";
+
+    q.options.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.innerHTML = `<div>${opt.label}<span class="desc">${opt.desc}</span></div>`;
+      btn.onclick = () => selectOption(q.key, opt);
+      container.appendChild(btn);
+    });
+  }
+
+  function selectOption(key, optionObj) {
+    answers[key] = optionObj;
+    if (currentStep < questions.length - 1) {
+      currentStep++;
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    document.getElementById("quiz-screen").classList.add("hidden");
+    document.getElementById("result-screen").classList.remove("hidden");
+
+    // 診断ロジック判定
+    let selectedKey = "shadowMash";
+    if (answers.fashion.value === "biz") {
+      selectedKey = "upBang";
+    } else if (answers.fashion.value === "clean") {
+      selectedKey = "centerPart";
+    } else if (answers.fashion.value === "street") {
+      selectedKey = "waveSpiral";
+    } else {
+      // カジュアル系の場合は顔型で分岐
+      if (answers.face.value === "round") {
+        selectedKey = "centerPart"; // 丸顔は縦ラインが出るセンターパート推奨
+      } else {
+        selectedKey = "shadowMash"; // 面長・ベース型はフォルム補正しやすいマッシュ
+      }
+    }
+
+    const res = stylesDB[selectedKey];
+
+    // 顔型・髪質に応じたパーソナルアドバイスの追加
+    let personalAdvice = "";
+    if (answers.face.value === "long") {
+      personalAdvice = "【面長さんへの似合わせポイント】横のシルエットに丸み（ボリューム）を出すことで、縦長感が消えて一気に小顔に見えます！";
+    } else if (answers.face.value === "round") {
+      personalAdvice = "【丸顔さんへの似合わせポイント】トップに高さを出しつつ、おでこを少し見せる分け目を作るとシャープで大人っぽい輪郭に整います！";
+    } else if (answers.face.value === "base") {
+      personalAdvice = "【ベース型さんへの似合わせポイント】ハチ周りをしっかり押さえ、顔周りに動きを作ることで骨格を綺麗にカバーできます！";
+    } else {
+      personalAdvice = "【バランス型への似合わせポイント】ひし形のシルエットを意識してアイロンを入れることで、さらに立体的な小顔効果が出ます！";
+    }
+
+    document.getElementById("res-style-name").textContent = res.name;
+    document.getElementById("res-style-desc").textContent = `${res.desc} ${personalAdvice}`;
+
+    // アイロン操作＆動画表示
+    document.getElementById("res-iron-title").textContent = `まずは「${res.ironTitle}」を練習！`;
+    document.getElementById("res-iron-desc").textContent = res.ironDesc;
+
+    const videoContainer = document.getElementById("res-iron-videos");
+    videoContainer.innerHTML = "";
+    res.videos.forEach(v => {
+      const a = document.createElement("a");
+      a.href = v.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = "btn btn-yt";
+      a.textContent = v.label;
+      videoContainer.appendChild(a);
+    });
+
+    // KANTAN series 表示
+    const waxContainer = document.getElementById("res-wax-list");
+    waxContainer.innerHTML = "";
+    res.waxes.forEach(w => {
+      const div = document.createElement("div");
+      div.className = "skill-card";
+      div.innerHTML = `
+        <div class="skill-name">KANTAN series：${w.name}</div>
+        <p class="skill-point">${w.desc}</p>
+        <a href="${w.url}" target="_blank" rel="noopener" class="btn btn-black">公式ページで購入・詳細を見る →</a>
+      `;
+      waxContainer.appendChild(div);
+    });
+
+    // SKILL 地域別スタイリスト提案
+    const salonTitle = document.getElementById("res-salon-area");
+    const salonDesc = document.getElementById("res-salon-desc");
+    if (answers.area.value === "kanto") {
+      salonTitle.textContent = "SKILL 東京（渋谷・表参道エリア）がおすすめ！";
+      salonDesc.textContent = `通いやすい東京エリアの店舗で、「${res.name}」のベースカットを得意とするSKILLスタイリストに任せましょう。カットだけで毎日のアイロンが劇的に楽になります。`;
+    } else if (answers.area.value === "kansai") {
+      salonTitle.textContent = "SKILL 主要都市店舗・提携スタイリスト";
+      salonDesc.textContent = `お近くのエリアや東京へお越しの際はぜひSKILLへ。ベースカットで「流れやすい・動きやすい」土台を作るのがセット上達の最短ルートです。`;
+    } else {
+      salonTitle.textContent = "まずはセルフセット＆東京遠征時はSKILLへ！";
+      salonDesc.textContent = `遠方の方はまず下の「オーダーカルテ」を地元の美容師さんに見せてベースを作ってもらい、みかみさんの動画とKANTANシリーズで自宅セットを極めましょう！`;
+    }
+
+    // オーダーカルテ生成
+    const karteList = document.getElementById("res-karte-list");
+    karteList.innerHTML = `
+      <li><strong>希望スタイル</strong>${res.name}</li>
+      <li><strong>骨格タイプ</strong>${answers.face.label}</li>
+      <li><strong>髪質の特徴</strong>${answers.hair.label}</li>
+      <li><strong>カット要望</strong>${res.karteCut}</li>
+    `;
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function restartQuiz() {
+    currentStep = 0;
+    document.getElementById("result-screen").classList.add("hidden");
+    document.getElementById("quiz-screen").classList.remove("hidden");
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // 初期表示
+  renderQuestion();
+</script>
+
+</body>
+</html>
